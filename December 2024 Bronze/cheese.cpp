@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -7,7 +6,6 @@ int main(){
 	vector<vector<int>> hor(n, vector<int>(n,0));
 	vector<vector<int>> ver(n, vector<int>(n,0));
 	vector<vector<int>> wid(n, vector<int>(n,0));
-	bool search = false;
 	int prev = 0;
 	for(int l=0;l <q; l++){
 		int x,y,z; cin>>x>>y>>z;
@@ -16,7 +14,7 @@ int main(){
 		wid[z][x]++;
 		int ans = 0;
 		if(hor[y][x] == n){
-					prev++;
+			prev++;
 		}
 		if(ver[z][y] == n){
 			prev++;
@@ -24,9 +22,7 @@ int main(){
 		if(wid[z][x] == n){
 			prev++;
 		}
-
 		cout<<prev<<endl;
-		
-			}
-		}
+	}
+}
 		
