@@ -1,37 +1,58 @@
 #include <bits/stdc++.h>
 using namespace std;
-
-int simulate(vector<int>& cows, int r){
-    int ans = 1;
-    int lastCow = 0;
-    for(int i=0; i<cows.size(); i++){
-        if(cows[i] - cows[lastCow] > 2 * r){
-            ans++;
-            lastCow = i;
-        }
+double left(set<int>& cows, double power, double point) {
+    if(power <= 0) return point;
+    auto it = cows.lower_bound(point - power);
+    if(it == cows.begin()) return -1;
+    --it;
+    if(*it >= point - power && *it < point) {
+        return left(cows, power - 1, *it);
     }
-    return ans;
+    return point;
 }
 
+double right(set<int>& cows, double power, double point) {
+    if(power <= 0) return point;
+    auto it = cows.upper_bound(point);
+    if(it == cows.end()) return 10e10;
+    if(*it <= point + power && *it > point) {
+        return right(cows, power - 1, *it);
+    }
+    return point;
+}
 int main() {
     freopen("angry.in", "r", stdin);
     freopen("angry.out", "w", stdout);
-	int n, k; cin>>n>>k;
-    vector<int> cows(n);
-    for(int i=0; i<n; i++){
-        cin>>cows[i];
-    }
-    sort(cows.begin(),cows.end());
-    int low = 0; int high = 10e9; int mid = low + (high-low)/2; int ans = 10e9;
-    while(low < high){
-        mid = low + (high-low)/2;
-        int requiredCows = simulate(cows, mid);
-        if(requiredCows <= k){ // less cows needed, decrease r
-            high = mid -1;
-            ans = min(ans, mid);
-        }else{ // too many cows needed, increase r
-            low = mid+1;
+	int n; cin>>n;
+    set<int> cows;
+    for(int i=0; i<n; i++){int a;cin>>a;cows.insert(a);}
+    double droppingPoint = 0; double dPowerTemp = 0;
+    for(auto i = cows.begin(); i!=cows.end(); i++){
+        if(i!=cows.begin()){
+            if(*i - *prev(i) > dPowerTemp){
+                dPowerTemp = *i - *prev(i);
+                droppingPoint = (*i + *prev(i))/2;
+            }
         }
     }
-    cout<<ans;
+    double low = 0; double high = 10e9; double mid = (((double)(high-low))/2) + low;
+    double ans = 10e9;
+    int count = 0;
+    while(count<100){
+        count++;
+        mid = (((double)(high-low))/2) + low;
+        bool works = left(cows, mid, droppingPoint) <= *cows.begin() && right(cows, mid, droppingPoint) >= *prev(cows.end());
+
+        if(works){
+            high = mid;
+            ans = min(ans,mid);
+        }else{
+            low = mid;
+        }
+    }
+
+    
+
+
+    cout<<fixed<<setprecision(1)<<ans;
 }

@@ -1,33 +1,32 @@
 #include <bits/stdc++.h>
 using namespace std;
-
+vector<vector<int>> cows;
 int main() {
-  freopen("cbarn.in", "r", stdin);
-  freopen("cbarn.out", "w", stdout);
-  int n; cin>>n;
-  
-  int ans = 2147483647;
-  vector<int> rooms;
-  for(int c=0; c<n; c++){
-    int a; cin>>a;
-    rooms.push_back(a);
-  }
-
-for(int i=0; i<n; i++){
-vector<int> circle;
-  for(int x=i; x<n+i; x++){
-    if(x>=n){
-      circle.push_back(rooms[x%n]);
-    }else{
-    circle.push_back(rooms[x]);
+    freopen("cbarn.in", "r", stdin);
+    freopen("cbarn.out", "w", stdout);
+	int n; cin>>n;
+    cows.resize(n);
+    vector<int> nums(n);
+    for(int i=0; i<n; i++){
+        cin>>nums[i];
+        for(int j=0; j<nums[i]; j++){
+            cows[i].push_back(0);
+        }
     }
-  }
-
-  int sum=0;
-for(int y=0; y<circle.size(); y++){
-  sum+=circle[y] * y;
-}
-ans = min(ans, sum);  
-}
-  cout<<ans;
+    for(int a=0; a<n; a++){
+        for(int i=0; i<n; i++){
+            if(nums[i] > 0 && nums[(i+1)%n] == 0){
+                nums[i]--;
+                int num = cows[i][nums[i]];
+                cows[i].resize(cows[i].size()-1);
+                nums[(i+1)%n]++;
+                cows[(i+1)%n].push_back(num+1);
+            }
+        }
+    }
+    int ans = 0;
+    for(int i=0; i<n; i++){
+        ans+=cows[i][0] * cows[i][0];
+    }
+    cout<<ans;
 }

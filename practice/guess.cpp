@@ -2,36 +2,19 @@
 using namespace std;
 
 int main() {
-  freopen("guess.in", "r", stdin);
-  freopen("guess.out", "w", stdout); 
-  int n; cin>>n;
-  vector<vector<string>> desc;
-  int ans = 1;
-  for(int c=0; c<n; c++){
-    string a;
-    int b;
-    cin>>a>>b;
-    vector<string> temp(b);
-    for(int l=0; l<b; l++){
-      cin>>temp[l];}
-    desc.push_back(temp);}
-int yes = 1;
-for(int i = 0; i<n; i++){
-  for(int j = 0; j<n; j++){
-    yes = 1;
-    for(int x = 0; x<desc[j].size(); x++){
-      for(int y = 0; y<desc[i].size(); y++){
-        if(desc[j][x] == desc[i][y] && i!=j){
-          yes++;}
-      }
+	int n, t; cin>>n>>t; int a = n;
+    int start = 0; int end = n-1; int ans = INT_MIN; int mid;
+    while(a--){
+        cout<<"? ";
+        mid = (end-start)/2 + start;
+        cout<<mid + 1<<" "<<end+1<<endl;
+        int x; cin>>x;
+        if(x > end - mid){
+            end = mid-1;
+        }else{
+            start = mid+1;
+            ans = max(mid, ans);
+        }
     }
-  }
-  ans = max(ans, yes);
-}
-
-
-
-
-cout<<ans;
-  
+    cout<<"! "<<ans +1;
 }

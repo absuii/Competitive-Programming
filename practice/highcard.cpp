@@ -14,9 +14,12 @@ int main() {
 	}
 	sort(cow.begin(),cow.end());
 	for(int i=1; i<2*n; i++){
-		if(*lower_bound(begin(cow), end(cow), i) != i){
-			bessie.insert(i);
-		}
+		vector<bool> hasCard(2*n+1, false);
+        for (int x : order) hasCard[x] = true;
+        for (int i = 1; i <= 2*n; i++) {
+            if (!hasCard[i]) bessie.insert(i);
+        }
+
 	}
 	int ans = 0;
 	for(int i=0; i<n; i++){

@@ -1,42 +1,53 @@
 #include <bits/stdc++.h>
 using namespace std;
-using ll = long long;
-#define pll pair<ll,ll>
+#define x second.first
+#define y second.second
+int dis(std::pair<int, int> a, std::pair<int, int> b) {
+    return std::abs(a.first - b.first) + std::abs(a.second - b.second);
+}
 
 int main() {
-    ll t; cin >> t;
-    while (t--) {
-        ll n; cin >> n;
-        vector<pll> pts(n);
-        vector<ll> xs, ys;
-        for (ll i = 0; i < n; i++) {
-            cin >> pts[i].first >> pts[i].second;
-            xs.push_back(pts[i].first);
-            ys.push_back(pts[i].second);
-        }
-        if (n == 1) {
-            cout << 1 << '\n';
-            continue;
-        }
-        sort(xs.begin(), xs.end());
-        sort(ys.begin(), ys.end());
-
-        ll ans = LLONG_MAX;
-        // Try all combinations of removing one of the min/max/second min/second max x or y
-        for (int xi = 0; xi < 2; ++xi) {
-            for (int xj = 0; xj < 2; ++xj) {
-                for (int yi = 0; yi < 2; ++yi) {
-                    for (int yj = 0; yj < 2; ++yj) {
-                        ll min_x = xs[xi];
-                        ll max_x = xs[n-1-xj];
-                        ll min_y = ys[yi];
-                        ll max_y = ys[n-1-yj];
-                        if (min_x > max_x || min_y > max_y) continue;
-                        ans = min(ans, (max_x - min_x + 1) * (max_y - min_y + 1));
-                    }
-                }
+    int g,n; cin>>g>>n;
+    vector<pair<int, pair<int,int>>> grazings(g);
+    vector<pair<int, pair<int,int>>> cows(n);
+    for(int i=0; i<g; i++){
+        cin >>grazings[i].x;
+        cin >> grazings[i].y;
+        cin >> grazings[i].first;
+    }
+    sort(grazings.begin(), grazings.end());
+    vector<int> time(g);
+    for(int i=0;i<g; i++){
+        time[i] = grazings[i].first;
+    }
+    for(int i=0; i<n; i++){
+        cin>>cows[i].x;
+        cin>>cows[i].y;
+        cin>>cows[i].first;
+    }
+    sort(cows.begin(), cows.end());
+    int ans = 0;
+    for(int i=0; i<n; i++){
+        auto it = lower_bound(time.begin(), time.end(), cows[i].first);
+        if (it != time.begin()) --it; 
+        auto it2 = upper_bound(time.begin(), time.end(), cows[i].first);
+        int count = 0; int abc = 0;
+        if(it!=time.end()){
+            count++;
+            if(abs(*it - cows[i].first) <= dis(grazings[it - time.begin()].second, cows[i].second)){
+                abc++;
             }
         }
-        cout << max(n, ans) << '\n';
+        if(it2!=time.end()){
+            count++;
+            if(abs(*it2 - cows[i].first) <= dis(grazings[it2 - time.begin()].second, cows[i].second)){
+                abc++;
+            }
+        }
+        if(count == abc){
+            ans++;
+        }
     }
+    cout<<ans;
+
 }

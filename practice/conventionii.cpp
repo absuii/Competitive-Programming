@@ -1,47 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define arrives first.first 
-#define t first.second
-#define senior second
-#define vec vector<pair<pair<int,int>,int>>
-#define pi pair<pair<int,int>, int>
-struct customComparator {
-    bool operator()(const pi& a, const pi& b) {
-        return a.senior > b.senior; 
+
+struct Cow {
+    int arrival, duration, id;
+    bool operator<(const Cow& o) const {
+        return id > o.id; 
     }
 };
 
-int main(){
-    int n; cin>>n;
-    vec cows(n);
-    for(int i=0;i<n;i++){
-        cin>>cows[i].arrives>>cows[i].t;
-        cows[i].senior = i;
+int main() {
+    freopen("convention2.in", "r", stdin);
+    freopen("convention2.out", "w", stdout);
+    int n; cin >> n;
+    vector<Cow> cows(n);
+    for (int i = 0; i < n; i++) {
+        cin >> cows[i].arrival >> cows[i].duration;
+        cows[i].id = i; 
     }
-    sort(cows.begin(),cows.end());
-    priority_queue<pi, vec, customComparator> waiting;
-    int time = 0;
-    int answer = INT_MIN;
-    int i = 0;
-    while(i<n || !waiting.empty()){
-        i++;
-        if(waiting.empty()){
-            time = max(time, cows[i].arrives);
-            waiting.push(cows[i]);
-            i++;
+    sort(cows.begin(), cows.end(), [](const Cow& a, const Cow& b) {
+        return a.arrival < b.arrival;
+    });
+    priority_queue<Cow> waiting;
+    int idx = 0; 
+    int currentTime = 0;
+    int maxWait = 0;
+    while (idx < n || !waiting.empty()) {
+        while (idx < n && cows[idx].arrival <= currentTime) {
+            waiting.push(cows[idx]);
+            idx++;
         }
-        int pos = i;
-        while(i<n && cows[i].arrives <= time){
-            waiting.push(cows[i]);
-            i++;
+        if (waiting.empty()) {
+            currentTime = cows[idx].arrival;
+            continue;
         }
-
-        pi current = waiting.top(); waiting.pop();
-        answer = max(answer, time - current.arrives);
-        time += current.t;
-
+        Cow curr = waiting.top(); waiting.pop();
+        int waitTime = max(0, currentTime - curr.arrival);
+        maxWait = max(maxWait, waitTime);
+        if (currentTime < curr.arrival) {
+            currentTime = curr.arrival;
+        }
+        currentTime += curr.duration;
     }
-    cout<<answer;
-
-
+    cout << maxWait << endl;
 }
